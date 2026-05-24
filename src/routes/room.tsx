@@ -4,6 +4,7 @@ import hostImg from "@/assets/participant-host.jpg";
 import p2Img from "@/assets/participant-2.jpg";
 import p3Img from "@/assets/participant-3.jpg";
 import {
+  Link2,
   Mic,
   MicOff,
   Video,
