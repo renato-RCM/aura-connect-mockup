@@ -1,7 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 
 const links = [
-  { to: "/", label: "Dashboard" },
+  { to: "/", label: "Início" },
   { to: "/room", label: "Sala Ativa" },
   { to: "/settings", label: "Configurações" },
 ];
