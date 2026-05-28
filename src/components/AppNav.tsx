@@ -4,6 +4,7 @@ const links = [
   { to: "/", label: "Início" },
   { to: "/room", label: "Sala Ativa" },
   { to: "/settings", label: "Configurações" },
+  { to: "/login", label: "Entrar" },
 ];
 
 export function AppNav() {
