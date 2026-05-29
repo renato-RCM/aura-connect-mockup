@@ -308,15 +308,7 @@ function Room() {
               </button>
             </div>
           </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setShortcutsOpen(true)}
-                className="h-9 px-3 inline-flex items-center gap-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-border text-xs text-muted-foreground hover:text-foreground transition-all"
-              >
-                <Keyboard className="size-3.5" /> Atalhos
-              </button>
-            </div>
-          </div>
+
 
           {/* Video grid */}
           <div className="flex-1 grid grid-cols-2 lg:grid-cols-4 grid-rows-3 lg:grid-rows-4 gap-2 lg:gap-3 min-h-0">
