@@ -27,6 +27,12 @@ import {
   Keyboard,
   Hand,
   X,
+  Paperclip,
+  Smile,
+  Monitor,
+  Circle,
+  Wifi,
+  FileText,
 } from "lucide-react";
 
 export const Route = createFileRoute("/room")({
@@ -243,22 +249,24 @@ function Room() {
             <div className="relative">
               <input
                 type="text"
-                placeholder="Digite uma mensagem (Enter envia · traduz automaticamente)"
-                className="w-full bg-black/40 border border-border rounded-lg pl-4 pr-12 py-3 text-sm focus:outline-none focus:border-primary/50 transition-all placeholder:text-muted-foreground/60"
+                placeholder="Mensagem (Enter envia · traduz automaticamente)"
+                className="w-full bg-black/40 border border-border rounded-lg pl-20 pr-12 py-3 text-sm focus:outline-none focus:border-primary/50 transition-all placeholder:text-muted-foreground/60"
               />
+              <div className="absolute left-1.5 top-1/2 -translate-y-1/2 flex items-center gap-0.5">
+                <button title="Anexar arquivo" className="size-8 rounded-md hover:bg-white/10 grid place-items-center text-muted-foreground hover:text-primary transition-colors">
+                  <Paperclip className="size-4" />
+                </button>
+                <button title="Emojis" className="size-8 rounded-md hover:bg-white/10 grid place-items-center text-muted-foreground hover:text-foreground transition-colors">
+                  <Smile className="size-4" />
+                </button>
+              </div>
               <button className="absolute right-1.5 top-1/2 -translate-y-1/2 size-9 rounded-md bg-primary text-primary-foreground grid place-items-center hover:brightness-110 transition-all">
                 <Send className="size-4" />
               </button>
             </div>
             <div className="flex items-center justify-between mt-2 text-[10px] mono text-muted-foreground">
-              <span className="flex items-center gap-1.5">
-                <ShieldCheck className="size-3 text-emerald-400" />
-                Histórico salvo
-              </span>
-              <button
-                onClick={() => setShortcutsOpen(true)}
-                className="flex items-center gap-1 hover:text-foreground transition-colors"
-              >
+              <span className="flex items-center gap-1.5"><FileText className="size-3 text-primary" /> PDF · imagens · até 50MB</span>
+              <button onClick={() => setShortcutsOpen(true)} className="flex items-center gap-1 hover:text-foreground transition-colors">
                 <Keyboard className="size-3" /> Atalhos
               </button>
             </div>
@@ -267,29 +275,40 @@ function Room() {
 
         {/* Center: Video Stage */}
         <section className="flex-1 relative flex flex-col p-3 sm:p-4 lg:p-6 gap-3 lg:gap-4 bg-[radial-gradient(circle_at_50%_-10%,_hsl(210_100%_18%/0.25),_transparent_60%)] overflow-hidden">
+          {/* Floating reactions */}
+          <div className="pointer-events-none absolute bottom-32 left-1/2 -translate-x-1/2 z-20 flex gap-6 text-3xl">
+            <span className="animate-fade-in" style={{ animationDuration: "2s" }}>👏</span>
+            <span className="animate-fade-in" style={{ animationDuration: "2.4s", animationDelay: "0.4s" }}>❤️</span>
+            <span className="animate-fade-in" style={{ animationDuration: "2.2s", animationDelay: "0.8s" }}>🔥</span>
+          </div>
+
           {/* Room title bar (desktop) */}
           <div className="hidden lg:flex items-center justify-between">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 flex-wrap">
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/[0.04] border border-border">
                 <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
                 <span className="text-xs font-semibold">Sala gyuwqdhx</span>
-                <span className="text-[10px] mono text-muted-foreground">
-                  · 00:42:18
-                </span>
+                <span className="text-[10px] mono text-muted-foreground">· 00:42:18</span>
               </div>
-              <span className="text-[10px] mono text-muted-foreground">
-                4 participantes · 3 idiomas · TURN custom
+              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-destructive/10 border border-destructive/30 text-destructive">
+                <Circle className="size-2 fill-destructive animate-pulse" />
+                <span className="text-[10px] mono uppercase tracking-widest font-bold">REC</span>
+              </div>
+              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/30 text-primary">
+                <Monitor className="size-3" />
+                <span className="text-[10px] mono uppercase tracking-widest font-bold">Sarah compartilhando</span>
+              </div>
+              <span className="text-[10px] mono text-muted-foreground flex items-center gap-1">
+                <Wifi className="size-3 text-emerald-400" /> 4 part · 3 idiomas · TURN
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <button
-                onClick={() => setShortcutsOpen(true)}
-                className="h-9 px-3 inline-flex items-center gap-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-border text-xs text-muted-foreground hover:text-foreground transition-all"
-              >
+              <button onClick={() => setShortcutsOpen(true)} className="h-9 px-3 inline-flex items-center gap-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-border text-xs text-muted-foreground hover:text-foreground transition-all">
                 <Keyboard className="size-3.5" /> Atalhos
               </button>
             </div>
           </div>
+
 
           {/* Video grid */}
           <div className="flex-1 grid grid-cols-2 lg:grid-cols-4 grid-rows-3 lg:grid-rows-4 gap-2 lg:gap-3 min-h-0">
