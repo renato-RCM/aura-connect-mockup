@@ -284,18 +284,30 @@ function Room() {
 
           {/* Room title bar (desktop) */}
           <div className="hidden lg:flex items-center justify-between">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 flex-wrap">
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/[0.04] border border-border">
                 <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
                 <span className="text-xs font-semibold">Sala gyuwqdhx</span>
-                <span className="text-[10px] mono text-muted-foreground">
-                  · 00:42:18
-                </span>
+                <span className="text-[10px] mono text-muted-foreground">· 00:42:18</span>
               </div>
-              <span className="text-[10px] mono text-muted-foreground">
-                4 participantes · 3 idiomas · TURN custom
+              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-destructive/10 border border-destructive/30 text-destructive">
+                <Circle className="size-2 fill-destructive animate-pulse" />
+                <span className="text-[10px] mono uppercase tracking-widest font-bold">REC</span>
+              </div>
+              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/30 text-primary">
+                <Monitor className="size-3" />
+                <span className="text-[10px] mono uppercase tracking-widest font-bold">Sarah compartilhando</span>
+              </div>
+              <span className="text-[10px] mono text-muted-foreground flex items-center gap-1">
+                <Wifi className="size-3 text-emerald-400" /> 4 part · 3 idiomas · TURN
               </span>
             </div>
+            <div className="flex items-center gap-2">
+              <button onClick={() => setShortcutsOpen(true)} className="h-9 px-3 inline-flex items-center gap-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-border text-xs text-muted-foreground hover:text-foreground transition-all">
+                <Keyboard className="size-3.5" /> Atalhos
+              </button>
+            </div>
+          </div>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setShortcutsOpen(true)}
