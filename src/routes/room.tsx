@@ -249,22 +249,24 @@ function Room() {
             <div className="relative">
               <input
                 type="text"
-                placeholder="Digite uma mensagem (Enter envia · traduz automaticamente)"
-                className="w-full bg-black/40 border border-border rounded-lg pl-4 pr-12 py-3 text-sm focus:outline-none focus:border-primary/50 transition-all placeholder:text-muted-foreground/60"
+                placeholder="Mensagem (Enter envia · traduz automaticamente)"
+                className="w-full bg-black/40 border border-border rounded-lg pl-20 pr-12 py-3 text-sm focus:outline-none focus:border-primary/50 transition-all placeholder:text-muted-foreground/60"
               />
+              <div className="absolute left-1.5 top-1/2 -translate-y-1/2 flex items-center gap-0.5">
+                <button title="Anexar arquivo" className="size-8 rounded-md hover:bg-white/10 grid place-items-center text-muted-foreground hover:text-primary transition-colors">
+                  <Paperclip className="size-4" />
+                </button>
+                <button title="Emojis" className="size-8 rounded-md hover:bg-white/10 grid place-items-center text-muted-foreground hover:text-foreground transition-colors">
+                  <Smile className="size-4" />
+                </button>
+              </div>
               <button className="absolute right-1.5 top-1/2 -translate-y-1/2 size-9 rounded-md bg-primary text-primary-foreground grid place-items-center hover:brightness-110 transition-all">
                 <Send className="size-4" />
               </button>
             </div>
             <div className="flex items-center justify-between mt-2 text-[10px] mono text-muted-foreground">
-              <span className="flex items-center gap-1.5">
-                <ShieldCheck className="size-3 text-emerald-400" />
-                Histórico salvo
-              </span>
-              <button
-                onClick={() => setShortcutsOpen(true)}
-                className="flex items-center gap-1 hover:text-foreground transition-colors"
-              >
+              <span className="flex items-center gap-1.5"><FileText className="size-3 text-primary" /> PDF · imagens · até 50MB</span>
+              <button onClick={() => setShortcutsOpen(true)} className="flex items-center gap-1 hover:text-foreground transition-colors">
                 <Keyboard className="size-3" /> Atalhos
               </button>
             </div>
@@ -273,6 +275,13 @@ function Room() {
 
         {/* Center: Video Stage */}
         <section className="flex-1 relative flex flex-col p-3 sm:p-4 lg:p-6 gap-3 lg:gap-4 bg-[radial-gradient(circle_at_50%_-10%,_hsl(210_100%_18%/0.25),_transparent_60%)] overflow-hidden">
+          {/* Floating reactions */}
+          <div className="pointer-events-none absolute bottom-32 left-1/2 -translate-x-1/2 z-20 flex gap-6 text-3xl">
+            <span className="animate-fade-in" style={{ animationDuration: "2s" }}>👏</span>
+            <span className="animate-fade-in" style={{ animationDuration: "2.4s", animationDelay: "0.4s" }}>❤️</span>
+            <span className="animate-fade-in" style={{ animationDuration: "2.2s", animationDelay: "0.8s" }}>🔥</span>
+          </div>
+
           {/* Room title bar (desktop) */}
           <div className="hidden lg:flex items-center justify-between">
             <div className="flex items-center gap-3">
