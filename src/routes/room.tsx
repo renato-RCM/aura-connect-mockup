@@ -27,6 +27,12 @@ import {
   Keyboard,
   Hand,
   X,
+  Paperclip,
+  Smile,
+  Monitor,
+  Circle,
+  Wifi,
+  FileText,
 } from "lucide-react";
 
 export const Route = createFileRoute("/room")({

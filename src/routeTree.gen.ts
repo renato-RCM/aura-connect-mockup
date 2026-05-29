@@ -9,8 +9,8 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SummaryRouteImport } from './routes/summary'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as RoomRouteImport } from './routes/room'
 import { Route as RemoteRouteImport } from './routes/remote'
 import { Route as ModulesRouteImport } from './routes/modules'
@@ -18,14 +18,46 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 
-const SettingsRoute = SettingsRouteImport.update({ id: '/settings', path: '/settings', getParentRoute: () => rootRouteImport } as any)
-const SummaryRoute = SummaryRouteImport.update({ id: '/summary', path: '/summary', getParentRoute: () => rootRouteImport } as any)
-const RoomRoute = RoomRouteImport.update({ id: '/room', path: '/room', getParentRoute: () => rootRouteImport } as any)
-const RemoteRoute = RemoteRouteImport.update({ id: '/remote', path: '/remote', getParentRoute: () => rootRouteImport } as any)
-const ModulesRoute = ModulesRouteImport.update({ id: '/modules', path: '/modules', getParentRoute: () => rootRouteImport } as any)
-const LoginRoute = LoginRouteImport.update({ id: '/login', path: '/login', getParentRoute: () => rootRouteImport } as any)
-const DashboardRoute = DashboardRouteImport.update({ id: '/dashboard', path: '/dashboard', getParentRoute: () => rootRouteImport } as any)
-const IndexRoute = IndexRouteImport.update({ id: '/', path: '/', getParentRoute: () => rootRouteImport } as any)
+const SummaryRoute = SummaryRouteImport.update({
+  id: '/summary',
+  path: '/summary',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RoomRoute = RoomRouteImport.update({
+  id: '/room',
+  path: '/room',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RemoteRoute = RemoteRouteImport.update({
+  id: '/remote',
+  path: '/remote',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ModulesRoute = ModulesRouteImport.update({
+  id: '/modules',
+  path: '/modules',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -34,8 +66,8 @@ export interface FileRoutesByFullPath {
   '/modules': typeof ModulesRoute
   '/remote': typeof RemoteRoute
   '/room': typeof RoomRoute
-  '/summary': typeof SummaryRoute
   '/settings': typeof SettingsRoute
+  '/summary': typeof SummaryRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -44,8 +76,8 @@ export interface FileRoutesByTo {
   '/modules': typeof ModulesRoute
   '/remote': typeof RemoteRoute
   '/room': typeof RoomRoute
-  '/summary': typeof SummaryRoute
   '/settings': typeof SettingsRoute
+  '/summary': typeof SummaryRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -55,15 +87,40 @@ export interface FileRoutesById {
   '/modules': typeof ModulesRoute
   '/remote': typeof RemoteRoute
   '/room': typeof RoomRoute
-  '/summary': typeof SummaryRoute
   '/settings': typeof SettingsRoute
+  '/summary': typeof SummaryRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/login' | '/modules' | '/remote' | '/room' | '/summary' | '/settings'
+  fullPaths:
+    | '/'
+    | '/dashboard'
+    | '/login'
+    | '/modules'
+    | '/remote'
+    | '/room'
+    | '/settings'
+    | '/summary'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/login' | '/modules' | '/remote' | '/room' | '/summary' | '/settings'
-  id: '__root__' | '/' | '/dashboard' | '/login' | '/modules' | '/remote' | '/room' | '/summary' | '/settings'
+  to:
+    | '/'
+    | '/dashboard'
+    | '/login'
+    | '/modules'
+    | '/remote'
+    | '/room'
+    | '/settings'
+    | '/summary'
+  id:
+    | '__root__'
+    | '/'
+    | '/dashboard'
+    | '/login'
+    | '/modules'
+    | '/remote'
+    | '/room'
+    | '/settings'
+    | '/summary'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -73,31 +130,81 @@ export interface RootRouteChildren {
   ModulesRoute: typeof ModulesRoute
   RemoteRoute: typeof RemoteRoute
   RoomRoute: typeof RoomRoute
-  SummaryRoute: typeof SummaryRoute
   SettingsRoute: typeof SettingsRoute
+  SummaryRoute: typeof SummaryRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/settings': { id: '/settings'; path: '/settings'; fullPath: '/settings'; preLoaderRoute: typeof SettingsRouteImport; parentRoute: typeof rootRouteImport }
-    '/summary': { id: '/summary'; path: '/summary'; fullPath: '/summary'; preLoaderRoute: typeof SummaryRouteImport; parentRoute: typeof rootRouteImport }
-    '/room': { id: '/room'; path: '/room'; fullPath: '/room'; preLoaderRoute: typeof RoomRouteImport; parentRoute: typeof rootRouteImport }
-    '/remote': { id: '/remote'; path: '/remote'; fullPath: '/remote'; preLoaderRoute: typeof RemoteRouteImport; parentRoute: typeof rootRouteImport }
-    '/modules': { id: '/modules'; path: '/modules'; fullPath: '/modules'; preLoaderRoute: typeof ModulesRouteImport; parentRoute: typeof rootRouteImport }
-    '/login': { id: '/login'; path: '/login'; fullPath: '/login'; preLoaderRoute: typeof LoginRouteImport; parentRoute: typeof rootRouteImport }
-    '/dashboard': { id: '/dashboard'; path: '/dashboard'; fullPath: '/dashboard'; preLoaderRoute: typeof DashboardRouteImport; parentRoute: typeof rootRouteImport }
-    '/': { id: '/'; path: '/'; fullPath: '/'; preLoaderRoute: typeof IndexRouteImport; parentRoute: typeof rootRouteImport }
+    '/summary': {
+      id: '/summary'
+      path: '/summary'
+      fullPath: '/summary'
+      preLoaderRoute: typeof SummaryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/room': {
+      id: '/room'
+      path: '/room'
+      fullPath: '/room'
+      preLoaderRoute: typeof RoomRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/remote': {
+      id: '/remote'
+      path: '/remote'
+      fullPath: '/remote'
+      preLoaderRoute: typeof RemoteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/modules': {
+      id: '/modules'
+      path: '/modules'
+      fullPath: '/modules'
+      preLoaderRoute: typeof ModulesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute,
-  DashboardRoute,
-  LoginRoute,
-  ModulesRoute,
-  RemoteRoute,
-  RoomRoute,
-  SummaryRoute,
-  SettingsRoute,
+  IndexRoute: IndexRoute,
+  DashboardRoute: DashboardRoute,
+  LoginRoute: LoginRoute,
+  ModulesRoute: ModulesRoute,
+  RemoteRoute: RemoteRoute,
+  RoomRoute: RoomRoute,
+  SettingsRoute: SettingsRoute,
+  SummaryRoute: SummaryRoute,
 }
-export const routeTree = rootRouteImport._addFileChildren(rootRouteChildren)._addFileTypes<FileRouteTypes>()
+export const routeTree = rootRouteImport
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>()
