@@ -15,7 +15,189 @@ import {
   ChevronRight,
   CheckCircle2,
   Activity,
+  Search,
+  Plus,
+  Star,
+  Laptop,
+  Server,
+  MonitorSmartphone,
+  Circle,
+  Clock,
+  MoreHorizontal,
 } from "lucide-react";
+
+type Host = {
+  id: string;
+  name: string;
+  user: string;
+  os: "win" | "mac" | "linux";
+  tag: "Diretoria" | "Engenharia" | "Suporte" | "Pessoal";
+  status: "online" | "idle" | "offline";
+  lastSeen: string;
+  fav?: boolean;
+  active?: boolean;
+};
+
+const HOSTS: Host[] = [
+  { id: "msk-03", name: "DESKTOP-MOSCOW-03", user: "Дмитрий Волков", os: "win", tag: "Engenharia", status: "online", lastSeen: "agora", fav: true, active: true },
+  { id: "sp-mac-01", name: "MBP-SaoPaulo-01", user: "Sarah Connor", os: "mac", tag: "Diretoria", status: "online", lastSeen: "agora", fav: true },
+  { id: "ny-srv", name: "NYC-EDGE-SRV", user: "infra@callnexa", os: "linux", tag: "Engenharia", status: "online", lastSeen: "2 min" },
+  { id: "lon-04", name: "DESKTOP-LONDON-04", user: "Marcus Holloway", os: "win", tag: "Suporte", status: "idle", lastSeen: "12 min" },
+  { id: "ber-mac", name: "MBP-Berlin-Anya", user: "Anya Petrova", os: "mac", tag: "Engenharia", status: "idle", lastSeen: "37 min" },
+  { id: "rj-02", name: "DESKTOP-RIO-02", user: "Heitor Lima", os: "win", tag: "Suporte", status: "offline", lastSeen: "ontem" },
+  { id: "casa", name: "Notebook Pessoal", user: "Renato Miranda", os: "mac", tag: "Pessoal", status: "offline", lastSeen: "há 3 dias" },
+  { id: "tok-04", name: "DESKTOP-TOKYO-04", user: "yuki.tanaka", os: "win", tag: "Engenharia", status: "offline", lastSeen: "há 6 dias" },
+];
+
+const tagColor: Record<Host["tag"], string> = {
+  Diretoria: "text-amber-300 bg-amber-500/10 border-amber-500/20",
+  Engenharia: "text-primary bg-primary/10 border-primary/20",
+  Suporte: "text-sky-300 bg-sky-500/10 border-sky-500/20",
+  Pessoal: "text-fuchsia-300 bg-fuchsia-500/10 border-fuchsia-500/20",
+};
+
+function OSIcon({ os, className = "" }: { os: Host["os"]; className?: string }) {
+  if (os === "mac") return <Laptop className={className} />;
+  if (os === "linux") return <Server className={className} />;
+  return <MonitorSmartphone className={className} />;
+}
+
+function HostsSidebar() {
+  const online = HOSTS.filter((h) => h.status === "online");
+  const idle = HOSTS.filter((h) => h.status === "idle");
+  const offline = HOSTS.filter((h) => h.status === "offline");
+
+  return (
+    <aside className="w-full lg:w-[300px] shrink-0 border-b lg:border-b-0 lg:border-r border-border bg-glass glass-blur overflow-y-auto">
+      <div className="p-4 space-y-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-[10px] mono uppercase tracking-[0.2em] text-muted-foreground">
+              Meus computadores
+            </div>
+            <h2 className="text-base font-semibold tracking-tight mt-0.5">
+              {HOSTS.length} dispositivos
+            </h2>
+          </div>
+          <button
+            title="Adicionar dispositivo"
+            className="size-8 grid place-items-center rounded-lg bg-primary/15 hover:bg-primary/25 text-primary border border-primary/30 transition-colors"
+          >
+            <Plus className="size-4" />
+          </button>
+        </div>
+
+        {/* Search */}
+        <div className="relative">
+          <Search className="size-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <input
+            placeholder="Buscar host, usuário, tag…"
+            className="w-full h-9 pl-8 pr-3 rounded-lg bg-white/[0.03] border border-border text-xs placeholder:text-muted-foreground/60 focus:outline-none focus:border-primary/40 focus:bg-white/[0.05] transition-all"
+          />
+        </div>
+
+        {/* Counters */}
+        <div className="grid grid-cols-3 gap-1.5">
+          {[
+            { l: "Online", v: online.length, c: "text-emerald-400" },
+            { l: "Inativo", v: idle.length, c: "text-amber-400" },
+            { l: "Offline", v: offline.length, c: "text-muted-foreground" },
+          ].map((s) => (
+            <div key={s.l} className="px-2 py-1.5 rounded-md bg-white/[0.02] border border-border text-center">
+              <div className={`text-sm font-semibold mono ${s.c}`}>{s.v}</div>
+              <div className="text-[9px] mono uppercase tracking-widest text-muted-foreground">{s.l}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Sections */}
+        {[
+          { label: "Online · disponível", color: "text-emerald-400", dot: "bg-emerald-400 animate-pulse", list: online },
+          { label: "Inativo · idle", color: "text-amber-400", dot: "bg-amber-400", list: idle },
+          { label: "Offline", color: "text-muted-foreground", dot: "bg-zinc-600", list: offline },
+        ].map((sec) => (
+          <section key={sec.label}>
+            <div className="flex items-center gap-2 px-1 mb-2">
+              <span className={`size-1.5 rounded-full ${sec.dot}`} />
+              <h3 className={`text-[9px] mono uppercase tracking-[0.2em] font-bold ${sec.color}`}>
+                {sec.label}
+              </h3>
+              <span className="ml-auto text-[9px] mono text-muted-foreground">{sec.list.length}</span>
+            </div>
+            <div className="space-y-1">
+              {sec.list.map((h) => (
+                <button
+                  key={h.id}
+                  className={`group w-full text-left p-2.5 rounded-lg border transition-all flex items-center gap-2.5 ${
+                    h.active
+                      ? "bg-primary/10 border-primary/40 shadow-[0_0_20px_-8px_hsl(210_100%_60%/0.5)]"
+                      : h.status === "offline"
+                      ? "bg-white/[0.015] border-border/60 opacity-60 hover:opacity-100 hover:bg-white/[0.04]"
+                      : "bg-white/[0.03] border-border hover:bg-white/[0.06] hover:border-primary/30"
+                  }`}
+                >
+                  <div className="relative shrink-0">
+                    <div className={`size-9 rounded-md grid place-items-center ${
+                      h.os === "mac" ? "bg-zinc-500/15 text-zinc-300" :
+                      h.os === "linux" ? "bg-amber-500/10 text-amber-300" :
+                      "bg-sky-500/10 text-sky-300"
+                    }`}>
+                      <OSIcon os={h.os} className="size-4" />
+                    </div>
+                    <Circle
+                      className={`absolute -bottom-0.5 -right-0.5 size-2.5 fill-current ${
+                        h.status === "online" ? "text-emerald-400" :
+                        h.status === "idle" ? "text-amber-400" : "text-zinc-600"
+                      } stroke-background`}
+                      strokeWidth={4}
+                    />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-xs font-semibold truncate">{h.name}</span>
+                      {h.fav && <Star className="size-2.5 fill-amber-400 text-amber-400 shrink-0" />}
+                    </div>
+                    <div className="flex items-center gap-1.5 mt-0.5">
+                      <span className="text-[10px] text-muted-foreground truncate">{h.user}</span>
+                    </div>
+                    <div className="flex items-center gap-1 mt-1">
+                      <span className={`text-[8px] mono uppercase tracking-wider px-1 py-px rounded border ${tagColor[h.tag]}`}>
+                        {h.tag}
+                      </span>
+                      <span className="text-[9px] mono text-muted-foreground inline-flex items-center gap-0.5 ml-auto">
+                        <Clock className="size-2.5" /> {h.lastSeen}
+                      </span>
+                    </div>
+                  </div>
+                  {h.status === "online" && !h.active && (
+                    <span className="text-[9px] mono uppercase tracking-widest text-primary opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+                      conectar →
+                    </span>
+                  )}
+                  {h.active && (
+                    <span className="text-[9px] mono uppercase tracking-widest text-emerald-400 shrink-0">
+                      ● ativo
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
+          </section>
+        ))}
+
+        <div className="pt-2 border-t border-border flex items-center justify-between">
+          <span className="text-[9px] mono text-muted-foreground inline-flex items-center gap-1">
+            <ShieldCheck className="size-3 text-emerald-400" />
+            E2E · pareamento por chave
+          </span>
+          <button className="size-7 grid place-items-center rounded-md hover:bg-white/5 text-muted-foreground">
+            <MoreHorizontal className="size-3.5" />
+          </button>
+        </div>
+      </div>
+    </aside>
+  );
+}
 
 export const Route = createFileRoute("/remote")({
   head: () => ({
