@@ -219,6 +219,9 @@ function Remote() {
       <AppNav />
 
       <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+        {/* Hosts sidebar */}
+        <HostsSidebar />
+
         {/* Stage */}
         <section className="flex-1 relative flex flex-col p-3 sm:p-6 gap-4 overflow-hidden bg-[radial-gradient(circle_at_50%_-10%,_hsl(210_100%_18%/0.25),_transparent_60%)]">
           {/* Top bar */}
