@@ -198,10 +198,7 @@ function Home() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {rooms.map((r, idx) => {
-            const minutes = [1, 47, 12][idx] ?? 1;
-            const pct = [100, 68, 24][idx] ?? 100;
-            const circ = 2 * Math.PI * 18;
+          {rooms.map((r) => {
             const isLive = r.status === "live";
             return (
               <article key={r.code} className="group relative p-5 rounded-2xl bg-card border border-border hover:border-primary/40 transition-all overflow-hidden">
