@@ -24,7 +24,10 @@ import {
   Circle,
   Clock,
   MoreHorizontal,
+  Bell,
+  Power,
 } from "lucide-react";
+import { useState } from "react";
 
 type Host = {
   id: string;
