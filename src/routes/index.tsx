@@ -192,54 +192,92 @@ function Home() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {rooms.map((r) => (
-            <article key={r.code} className="group relative p-5 rounded-2xl bg-card border border-border hover:border-primary/40 transition-all overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/0 via-primary/0 to-primary/0 group-hover:to-primary/[0.04] transition-all pointer-events-none" />
-              <div className="relative">
-                <div className="flex items-center justify-between mb-4">
-                  <span className="mono text-[10px] uppercase tracking-widest px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">{r.code}</span>
-                  <div className="flex gap-1 text-muted-foreground">
-                    <button className="size-7 rounded-md hover:bg-white/5 grid place-items-center transition-colors"><Link2 className="size-3.5" /></button>
-                    <button className="size-7 rounded-md hover:bg-white/5 grid place-items-center transition-colors"><Lock className="size-3.5" /></button>
-                    <button className="size-7 rounded-md hover:bg-destructive/10 hover:text-destructive grid place-items-center transition-colors"><Trash2 className="size-3.5" /></button>
+          {rooms.map((r, idx) => {
+            const minutes = [1, 47, 12][idx] ?? 1;
+            const pct = [100, 68, 24][idx] ?? 100;
+            const circ = 2 * Math.PI * 18;
+            const isLive = r.status === "live";
+            return (
+              <article key={r.code} className="group relative p-5 rounded-2xl bg-card border border-border hover:border-primary/40 transition-all overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/0 via-primary/0 to-primary/0 group-hover:to-primary/[0.04] transition-all pointer-events-none" />
+                <div className="relative">
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="mono text-[10px] uppercase tracking-widest px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">{r.code}</span>
+                    <div className="flex gap-1 text-muted-foreground">
+                      <button className="size-7 rounded-md hover:bg-white/5 grid place-items-center transition-colors"><Link2 className="size-3.5" /></button>
+                      <button className="size-7 rounded-md hover:bg-white/5 grid place-items-center transition-colors"><Lock className="size-3.5" /></button>
+                      <button className="size-7 rounded-md hover:bg-destructive/10 hover:text-destructive grid place-items-center transition-colors"><Trash2 className="size-3.5" /></button>
+                    </div>
                   </div>
-                </div>
 
-                <h3 className="text-base font-semibold tracking-tight mb-3">{r.name}</h3>
+                  <h3 className="text-base font-semibold tracking-tight mb-3">{r.name}</h3>
 
-                <div className="space-y-1.5 text-[11px] text-muted-foreground mono">
-                  <div className="flex items-center gap-2"><Clock className="size-3" /> Criada {r.created}</div>
-                  <div className="flex items-center gap-2"><Radio className="size-3" /> {r.lastActivity}</div>
-                  <div className="flex items-center gap-2"><Users className="size-3" /> {r.participants} participantes</div>
-                </div>
+                  <div className="space-y-1.5 text-[11px] text-muted-foreground mono">
+                    <div className="flex items-center gap-2"><Clock className="size-3" /> Criada {r.created}</div>
+                    <div className="flex items-center gap-2"><Radio className="size-3" /> Última atividade {r.lastActivity}</div>
+                    <div className="flex items-center gap-2"><Users className="size-3" /> {r.participants} participantes</div>
+                  </div>
 
-                <div className="flex items-center gap-1.5 mt-4">
-                  <Languages className="size-3 text-muted-foreground" />
-                  {r.langs.map((l) => (
-                    <span key={l} className="text-[10px] mono font-bold px-1.5 py-0.5 rounded bg-white/5 border border-white/10">{l}</span>
-                  ))}
-                </div>
+                  <div className="flex items-center gap-1.5 mt-4">
+                    <Languages className="size-3 text-muted-foreground" />
+                    {r.langs.map((l) => (
+                      <span key={l} className="text-[10px] mono font-bold px-1.5 py-0.5 rounded bg-white/5 border border-white/10">{l}</span>
+                    ))}
+                  </div>
 
-                <div className="mt-5 flex gap-2">
                   <Link
                     to="/room"
-                    className={`flex-1 inline-flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ${
-                      r.status === "live"
-                        ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20"
-                        : "bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20"
+                    className={`mt-5 w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-[11px] font-bold uppercase tracking-[0.18em] border-2 transition-all ${
+                      isLive
+                        ? "border-emerald-500/40 bg-emerald-500/5 text-emerald-400 hover:bg-emerald-500/15"
+                        : "border-primary/40 bg-primary/5 text-primary hover:bg-primary/15"
                     }`}
                   >
-                    {r.status === "live" ? (<><span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" /> Entrar agora</>) : "Entrar"}
+                    {isLive && <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />}
+                    Entrar como anfitrião
                   </Link>
-                  {r.status === "ended" && (
-                    <Link to="/summary" title="Ver resumo IA" className="size-10 grid place-items-center rounded-lg bg-white/5 hover:bg-white/10 border border-border text-primary">
-                      <Sparkles className="size-3.5" />
-                    </Link>
-                  )}
+
+                  <div className="mt-5 pt-4 border-t border-border/60 flex items-center gap-3">
+                    <div className="relative size-12 shrink-0">
+                      <svg className="size-12 -rotate-90" viewBox="0 0 44 44">
+                        <circle cx="22" cy="22" r="18" fill="none" stroke="hsl(var(--border))" strokeWidth="3" />
+                        <circle
+                          cx="22" cy="22" r="18" fill="none"
+                          stroke={isLive ? "rgb(52 211 153)" : "hsl(var(--primary))"}
+                          strokeWidth="3" strokeLinecap="round"
+                          strokeDasharray={circ}
+                          strokeDashoffset={circ - (circ * pct) / 100}
+                        />
+                      </svg>
+                      <div className="absolute inset-0 grid place-items-center">
+                        <div className="text-center leading-none">
+                          <div className="text-sm font-bold">{minutes}</div>
+                          <div className="text-[8px] mono uppercase text-muted-foreground">min</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between mb-1.5">
+                        <span className="text-[10px] mono uppercase tracking-widest text-muted-foreground">Você</span>
+                        <span className={`text-[10px] mono font-bold ${isLive ? "text-emerald-400" : "text-primary"}`}>{pct}%</span>
+                      </div>
+                      <div className="h-1.5 rounded-full bg-white/5 overflow-hidden">
+                        <div
+                          className={`h-full rounded-full ${isLive ? "bg-emerald-400" : "bg-primary"}`}
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                    </div>
+                    {!isLive && (
+                      <Link to="/summary" title="Resumo IA" className="size-9 grid place-items-center rounded-lg bg-white/5 hover:bg-white/10 border border-border text-primary shrink-0">
+                        <Sparkles className="size-3.5" />
+                      </Link>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </article>
-          ))}
+              </article>
+            );
+          })}
 
           <Link to="/room" className="group p-5 rounded-2xl border border-dashed border-border bg-white/[0.015] hover:border-primary/40 hover:bg-primary/[0.03] transition-all flex flex-col items-center justify-center min-h-[260px] text-center">
             <div className="size-12 rounded-full border-2 border-dashed border-border group-hover:border-primary group-hover:text-primary text-muted-foreground grid place-items-center mb-3 transition-all">
