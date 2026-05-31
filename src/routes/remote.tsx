@@ -25,7 +25,6 @@ import {
   Clock,
   MoreHorizontal,
   Bell,
-  Power,
 } from "lucide-react";
 import { useState } from "react";
 
