@@ -33,10 +33,16 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
+const LANG_META: Record<string, { name: string; color: string; hex: string }> = {
+  PT: { name: "Português", color: "text-sky-400", hex: "#38bdf8" },
+  EN: { name: "English", color: "text-emerald-400", hex: "#34d399" },
+  RU: { name: "Русский", color: "text-fuchsia-400", hex: "#e879f9" },
+};
+
 const rooms = [
-  { code: "gyuwqdhx", name: "Conselho Executivo Q4", created: "23/05 · 23:54", lastActivity: "há 12 min", participants: 8, langs: ["PT", "EN", "RU"], status: "live" as const },
-  { code: "alpha-8726", name: "Sync Global de Engenharia", created: "22/05 · 14:10", lastActivity: "ontem", participants: 14, langs: ["EN", "PT"], status: "ended" as const },
-  { code: "delta-3019", name: "Pitch Investidores Série B", created: "20/05 · 09:30", lastActivity: "há 3 dias", participants: 5, langs: ["PT", "EN"], status: "ended" as const },
+  { code: "gyuwqdhx", name: "Conselho Executivo Q4", created: "23/05 · 23:54", lastActivity: "há 12 min", participants: 8, langs: [{ k: "PT", v: 38 }, { k: "EN", v: 44 }, { k: "RU", v: 18 }], status: "live" as const },
+  { code: "alpha-8726", name: "Sync Global de Engenharia", created: "22/05 · 14:10", lastActivity: "ontem", participants: 14, langs: [{ k: "PT", v: 46 }, { k: "EN", v: 34 }, { k: "RU", v: 20 }], status: "ended" as const },
+  { code: "delta-3019", name: "Pitch Investidores Série B", created: "20/05 · 09:30", lastActivity: "há 3 dias", participants: 5, langs: [{ k: "PT", v: 60 }, { k: "EN", v: 40 }], status: "ended" as const },
 ];
 
 const features = [
