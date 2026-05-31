@@ -104,24 +104,36 @@ function HostsSidebar() {
         <div className="relative">
           <Search className="size-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
             placeholder="Buscar host, usuário, tag…"
             className="w-full h-9 pl-8 pr-3 rounded-lg bg-white/[0.03] border border-border text-xs placeholder:text-muted-foreground/60 focus:outline-none focus:border-primary/40 focus:bg-white/[0.05] transition-all"
           />
         </div>
 
-        {/* Counters */}
-        <div className="grid grid-cols-3 gap-1.5">
-          {[
-            { l: "Online", v: online.length, c: "text-emerald-400" },
-            { l: "Inativo", v: idle.length, c: "text-amber-400" },
-            { l: "Offline", v: offline.length, c: "text-muted-foreground" },
-          ].map((s) => (
-            <div key={s.l} className="px-2 py-1.5 rounded-md bg-white/[0.02] border border-border text-center">
-              <div className={`text-sm font-semibold mono ${s.c}`}>{s.v}</div>
-              <div className="text-[9px] mono uppercase tracking-widest text-muted-foreground">{s.l}</div>
-            </div>
+        {/* Filter chips */}
+        <div className="flex gap-1">
+          {([
+            { k: "all", l: "Todos", v: HOSTS.length, c: "text-foreground" },
+            { k: "online", l: "Online", v: HOSTS.filter(h => h.status === "online").length, c: "text-emerald-400" },
+            { k: "idle", l: "Idle", v: HOSTS.filter(h => h.status === "idle").length, c: "text-amber-400" },
+            { k: "offline", l: "Offline", v: HOSTS.filter(h => h.status === "offline").length, c: "text-muted-foreground" },
+          ] as const).map((f) => (
+            <button
+              key={f.k}
+              onClick={() => setFilter(f.k)}
+              className={`flex-1 px-2 py-1.5 rounded-md border text-[9px] mono uppercase tracking-widest transition-all ${
+                filter === f.k
+                  ? "bg-primary/15 border-primary/40 text-primary"
+                  : "bg-white/[0.02] border-border text-muted-foreground hover:bg-white/[0.05] hover:text-foreground"
+              }`}
+            >
+              <div className={`text-xs font-bold ${filter === f.k ? "text-primary" : f.c}`}>{f.v}</div>
+              <div>{f.l}</div>
+            </button>
           ))}
         </div>
+
 
         {/* Sections */}
         {[
