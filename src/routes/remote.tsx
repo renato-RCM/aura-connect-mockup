@@ -66,9 +66,19 @@ function OSIcon({ os, className = "" }: { os: Host["os"]; className?: string }) 
 }
 
 function HostsSidebar() {
-  const online = HOSTS.filter((h) => h.status === "online");
-  const idle = HOSTS.filter((h) => h.status === "idle");
-  const offline = HOSTS.filter((h) => h.status === "offline");
+  const [filter, setFilter] = useState<"all" | "online" | "idle" | "offline">("all");
+  const [query, setQuery] = useState("");
+
+  const matches = (h: Host) => {
+    if (filter !== "all" && h.status !== filter) return false;
+    if (!query.trim()) return true;
+    const q = query.toLowerCase();
+    return h.name.toLowerCase().includes(q) || h.user.toLowerCase().includes(q) || h.tag.toLowerCase().includes(q);
+  };
+
+  const online = HOSTS.filter((h) => h.status === "online" && matches(h));
+  const idle = HOSTS.filter((h) => h.status === "idle" && matches(h));
+  const offline = HOSTS.filter((h) => h.status === "offline" && matches(h));
 
   return (
     <aside className="w-full lg:w-[300px] shrink-0 border-b lg:border-b-0 lg:border-r border-border bg-glass glass-blur overflow-y-auto">
