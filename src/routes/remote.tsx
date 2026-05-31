@@ -204,11 +204,30 @@ function HostsSidebar() {
                       ● ativo
                     </span>
                   )}
+                  {h.status === "idle" && (
+                    <span className="text-[9px] mono uppercase tracking-widest text-amber-300 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+                      acordar →
+                    </span>
+                  )}
+                  {h.status === "offline" && (
+                    <span
+                      title="Notificar quando ficar online"
+                      className="size-7 grid place-items-center rounded-md bg-white/5 border border-border text-muted-foreground hover:text-amber-300 hover:border-amber-500/30 transition-all shrink-0"
+                    >
+                      <Bell className="size-3" />
+                    </span>
+                  )}
                 </button>
               ))}
+              {sec.list.length === 0 && (
+                <div className="px-3 py-4 text-center text-[10px] mono text-muted-foreground/60 border border-dashed border-border/60 rounded-lg">
+                  nenhum host nesta categoria
+                </div>
+              )}
             </div>
           </section>
         ))}
+
 
         <div className="pt-2 border-t border-border flex items-center justify-between">
           <span className="text-[9px] mono text-muted-foreground inline-flex items-center gap-1">
