@@ -24,7 +24,9 @@ import {
   Circle,
   Clock,
   MoreHorizontal,
+  Bell,
 } from "lucide-react";
+import { useState } from "react";
 
 type Host = {
   id: string;
@@ -63,9 +65,19 @@ function OSIcon({ os, className = "" }: { os: Host["os"]; className?: string }) 
 }
 
 function HostsSidebar() {
-  const online = HOSTS.filter((h) => h.status === "online");
-  const idle = HOSTS.filter((h) => h.status === "idle");
-  const offline = HOSTS.filter((h) => h.status === "offline");
+  const [filter, setFilter] = useState<"all" | "online" | "idle" | "offline">("all");
+  const [query, setQuery] = useState("");
+
+  const matches = (h: Host) => {
+    if (filter !== "all" && h.status !== filter) return false;
+    if (!query.trim()) return true;
+    const q = query.toLowerCase();
+    return h.name.toLowerCase().includes(q) || h.user.toLowerCase().includes(q) || h.tag.toLowerCase().includes(q);
+  };
+
+  const online = HOSTS.filter((h) => h.status === "online" && matches(h));
+  const idle = HOSTS.filter((h) => h.status === "idle" && matches(h));
+  const offline = HOSTS.filter((h) => h.status === "offline" && matches(h));
 
   return (
     <aside className="w-full lg:w-[300px] shrink-0 border-b lg:border-b-0 lg:border-r border-border bg-glass glass-blur overflow-y-auto">
@@ -91,24 +103,36 @@ function HostsSidebar() {
         <div className="relative">
           <Search className="size-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
             placeholder="Buscar host, usuário, tag…"
             className="w-full h-9 pl-8 pr-3 rounded-lg bg-white/[0.03] border border-border text-xs placeholder:text-muted-foreground/60 focus:outline-none focus:border-primary/40 focus:bg-white/[0.05] transition-all"
           />
         </div>
 
-        {/* Counters */}
-        <div className="grid grid-cols-3 gap-1.5">
-          {[
-            { l: "Online", v: online.length, c: "text-emerald-400" },
-            { l: "Inativo", v: idle.length, c: "text-amber-400" },
-            { l: "Offline", v: offline.length, c: "text-muted-foreground" },
-          ].map((s) => (
-            <div key={s.l} className="px-2 py-1.5 rounded-md bg-white/[0.02] border border-border text-center">
-              <div className={`text-sm font-semibold mono ${s.c}`}>{s.v}</div>
-              <div className="text-[9px] mono uppercase tracking-widest text-muted-foreground">{s.l}</div>
-            </div>
+        {/* Filter chips */}
+        <div className="flex gap-1">
+          {([
+            { k: "all", l: "Todos", v: HOSTS.length, c: "text-foreground" },
+            { k: "online", l: "Online", v: HOSTS.filter(h => h.status === "online").length, c: "text-emerald-400" },
+            { k: "idle", l: "Idle", v: HOSTS.filter(h => h.status === "idle").length, c: "text-amber-400" },
+            { k: "offline", l: "Offline", v: HOSTS.filter(h => h.status === "offline").length, c: "text-muted-foreground" },
+          ] as const).map((f) => (
+            <button
+              key={f.k}
+              onClick={() => setFilter(f.k)}
+              className={`flex-1 px-2 py-1.5 rounded-md border text-[9px] mono uppercase tracking-widest transition-all ${
+                filter === f.k
+                  ? "bg-primary/15 border-primary/40 text-primary"
+                  : "bg-white/[0.02] border-border text-muted-foreground hover:bg-white/[0.05] hover:text-foreground"
+              }`}
+            >
+              <div className={`text-xs font-bold ${filter === f.k ? "text-primary" : f.c}`}>{f.v}</div>
+              <div>{f.l}</div>
+            </button>
           ))}
         </div>
+
 
         {/* Sections */}
         {[
@@ -179,11 +203,30 @@ function HostsSidebar() {
                       ● ativo
                     </span>
                   )}
+                  {h.status === "idle" && (
+                    <span className="text-[9px] mono uppercase tracking-widest text-amber-300 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+                      acordar →
+                    </span>
+                  )}
+                  {h.status === "offline" && (
+                    <span
+                      title="Notificar quando ficar online"
+                      className="size-7 grid place-items-center rounded-md bg-white/5 border border-border text-muted-foreground hover:text-amber-300 hover:border-amber-500/30 transition-all shrink-0"
+                    >
+                      <Bell className="size-3" />
+                    </span>
+                  )}
                 </button>
               ))}
+              {sec.list.length === 0 && (
+                <div className="px-3 py-4 text-center text-[10px] mono text-muted-foreground/60 border border-dashed border-border/60 rounded-lg">
+                  nenhum host nesta categoria
+                </div>
+              )}
             </div>
           </section>
         ))}
+
 
         <div className="pt-2 border-t border-border flex items-center justify-between">
           <span className="text-[9px] mono text-muted-foreground inline-flex items-center gap-1">
