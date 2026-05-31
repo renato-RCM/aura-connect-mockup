@@ -33,10 +33,16 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
+const LANG_META: Record<string, { name: string; color: string; hex: string }> = {
+  PT: { name: "Português", color: "text-sky-400", hex: "#38bdf8" },
+  EN: { name: "English", color: "text-emerald-400", hex: "#34d399" },
+  RU: { name: "Русский", color: "text-fuchsia-400", hex: "#e879f9" },
+};
+
 const rooms = [
-  { code: "gyuwqdhx", name: "Conselho Executivo Q4", created: "23/05 · 23:54", lastActivity: "há 12 min", participants: 8, langs: ["PT", "EN", "RU"], status: "live" as const },
-  { code: "alpha-8726", name: "Sync Global de Engenharia", created: "22/05 · 14:10", lastActivity: "ontem", participants: 14, langs: ["EN", "PT"], status: "ended" as const },
-  { code: "delta-3019", name: "Pitch Investidores Série B", created: "20/05 · 09:30", lastActivity: "há 3 dias", participants: 5, langs: ["PT", "EN"], status: "ended" as const },
+  { code: "gyuwqdhx", name: "Conselho Executivo Q4", created: "23/05 · 23:54", lastActivity: "há 12 min", participants: 8, langs: [{ k: "PT", v: 38 }, { k: "EN", v: 44 }, { k: "RU", v: 18 }], status: "live" as const },
+  { code: "alpha-8726", name: "Sync Global de Engenharia", created: "22/05 · 14:10", lastActivity: "ontem", participants: 14, langs: [{ k: "PT", v: 46 }, { k: "EN", v: 34 }, { k: "RU", v: 20 }], status: "ended" as const },
+  { code: "delta-3019", name: "Pitch Investidores Série B", created: "20/05 · 09:30", lastActivity: "há 3 dias", participants: 5, langs: [{ k: "PT", v: 60 }, { k: "EN", v: 40 }], status: "ended" as const },
 ];
 
 const features = [
@@ -192,10 +198,7 @@ function Home() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {rooms.map((r, idx) => {
-            const minutes = [1, 47, 12][idx] ?? 1;
-            const pct = [100, 68, 24][idx] ?? 100;
-            const circ = 2 * Math.PI * 18;
+          {rooms.map((r) => {
             const isLive = r.status === "live";
             return (
               <article key={r.code} className="group relative p-5 rounded-2xl bg-card border border-border hover:border-primary/40 transition-all overflow-hidden">
@@ -221,59 +224,81 @@ function Home() {
                   <div className="flex items-center gap-1.5 mt-4">
                     <Languages className="size-3 text-muted-foreground" />
                     {r.langs.map((l) => (
-                      <span key={l} className="text-[10px] mono font-bold px-1.5 py-0.5 rounded bg-white/5 border border-white/10">{l}</span>
+                      <span key={l.k} className={`text-[10px] mono font-bold px-1.5 py-0.5 rounded bg-white/5 border border-white/10 ${LANG_META[l.k].color}`}>
+                        {l.k}
+                      </span>
                     ))}
                   </div>
 
-                  <Link
-                    to="/room"
-                    className={`mt-5 w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-[11px] font-bold uppercase tracking-[0.18em] border-2 transition-all ${
-                      isLive
-                        ? "border-emerald-500/40 bg-emerald-500/5 text-emerald-400 hover:bg-emerald-500/15"
-                        : "border-primary/40 bg-primary/5 text-primary hover:bg-primary/15"
-                    }`}
-                  >
-                    {isLive && <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />}
-                    Entrar como anfitrião
-                  </Link>
-
-                  <div className="mt-5 pt-4 border-t border-border/60 flex items-center gap-3">
-                    <div className="relative size-12 shrink-0">
-                      <svg className="size-12 -rotate-90" viewBox="0 0 44 44">
-                        <circle cx="22" cy="22" r="18" fill="none" stroke="hsl(var(--border))" strokeWidth="3" />
-                        <circle
-                          cx="22" cy="22" r="18" fill="none"
-                          stroke={isLive ? "rgb(52 211 153)" : "hsl(var(--primary))"}
-                          strokeWidth="3" strokeLinecap="round"
-                          strokeDasharray={circ}
-                          strokeDashoffset={circ - (circ * pct) / 100}
-                        />
-                      </svg>
-                      <div className="absolute inset-0 grid place-items-center">
-                        <div className="text-center leading-none">
-                          <div className="text-sm font-bold">{minutes}</div>
-                          <div className="text-[8px] mono uppercase text-muted-foreground">min</div>
+                  {/* Language distribution */}
+                  <div className="mt-4 p-3 rounded-xl bg-white/[0.02] border border-border">
+                    <div className="flex items-center gap-1.5 mb-2.5">
+                      <span className="text-[9px] mono uppercase tracking-[0.2em] text-muted-foreground">Distribuição de idiomas</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      {/* Donut */}
+                      <div className="relative size-16 shrink-0">
+                        <svg className="size-16 -rotate-90" viewBox="0 0 44 44">
+                          <circle cx="22" cy="22" r="16" fill="none" stroke="hsl(var(--border))" strokeWidth="5" />
+                          {(() => {
+                            const C = 2 * Math.PI * 16;
+                            let acc = 0;
+                            return r.langs.map((l) => {
+                              const len = (C * l.v) / 100;
+                              const seg = (
+                                <circle
+                                  key={l.k}
+                                  cx="22" cy="22" r="16" fill="none"
+                                  stroke={LANG_META[l.k].hex}
+                                  strokeWidth="5"
+                                  strokeDasharray={`${len} ${C - len}`}
+                                  strokeDashoffset={-acc}
+                                />
+                              );
+                              acc += len;
+                              return seg;
+                            });
+                          })()}
+                        </svg>
+                        <div className="absolute inset-0 grid place-items-center">
+                          <div className="text-center leading-none">
+                            <div className="text-sm font-bold">{r.langs.length}</div>
+                            <div className="text-[7px] mono uppercase text-muted-foreground">idiomas</div>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-[10px] mono uppercase tracking-widest text-muted-foreground">Você</span>
-                        <span className={`text-[10px] mono font-bold ${isLive ? "text-emerald-400" : "text-primary"}`}>{pct}%</span>
-                      </div>
-                      <div className="h-1.5 rounded-full bg-white/5 overflow-hidden">
-                        <div
-                          className={`h-full rounded-full ${isLive ? "bg-emerald-400" : "bg-primary"}`}
-                          style={{ width: `${pct}%` }}
-                        />
+                      {/* Legend */}
+                      <div className="flex-1 min-w-0 space-y-1">
+                        {r.langs.map((l) => (
+                          <div key={l.k} className="flex items-center gap-2 text-[10px]">
+                            <span className="size-1.5 rounded-full shrink-0" style={{ background: LANG_META[l.k].hex }} />
+                            <span className="text-muted-foreground truncate flex-1">{LANG_META[l.k].name}</span>
+                            <span className="mono font-bold text-foreground">{l.v}%</span>
+                          </div>
+                        ))}
                       </div>
                     </div>
+                  </div>
+
+                  <div className="mt-4 flex gap-2">
+                    <Link
+                      to="/room"
+                      className={`flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-[11px] font-bold uppercase tracking-[0.18em] border-2 transition-all ${
+                        isLive
+                          ? "border-emerald-500/40 bg-emerald-500/5 text-emerald-400 hover:bg-emerald-500/15"
+                          : "border-primary/40 bg-primary/5 text-primary hover:bg-primary/15"
+                      }`}
+                    >
+                      {isLive && <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />}
+                      Entrar
+                    </Link>
                     {!isLive && (
-                      <Link to="/summary" title="Resumo IA" className="size-9 grid place-items-center rounded-lg bg-white/5 hover:bg-white/10 border border-border text-primary shrink-0">
-                        <Sparkles className="size-3.5" />
+                      <Link to="/summary" title="Resumo IA" className="size-12 grid place-items-center rounded-xl bg-white/5 hover:bg-white/10 border border-border text-primary shrink-0">
+                        <Sparkles className="size-4" />
                       </Link>
                     )}
                   </div>
+
                 </div>
               </article>
             );
