@@ -40,10 +40,16 @@ const LANG_META: Record<string, { name: string; color: string; hex: string }> = 
 };
 
 const rooms = [
-  { code: "gyuwqdhx", name: "Conselho Executivo Q4", created: "23/05 · 23:54", lastActivity: "há 12 min", participants: 8, langs: [{ k: "PT", v: 38 }, { k: "EN", v: 44 }, { k: "RU", v: 18 }], status: "live" as const },
-  { code: "alpha-8726", name: "Sync Global de Engenharia", created: "22/05 · 14:10", lastActivity: "ontem", participants: 14, langs: [{ k: "PT", v: 46 }, { k: "EN", v: 34 }, { k: "RU", v: 20 }], status: "ended" as const },
-  { code: "delta-3019", name: "Pitch Investidores Série B", created: "20/05 · 09:30", lastActivity: "há 3 dias", participants: 5, langs: [{ k: "PT", v: 60 }, { k: "EN", v: 40 }], status: "ended" as const },
+  { code: "gyuwqdhx", name: "Conselho Executivo Q4", created: "23/05 · 23:54", lastActivity: "há 12 min", participants: 8, langs: [{ k: "PT", v: 38 }, { k: "EN", v: 44 }, { k: "RU", v: 18 }], parts: { speaking: 3, active: 4, idle: 1 }, status: "live" as const },
+  { code: "alpha-8726", name: "Sync Global de Engenharia", created: "22/05 · 14:10", lastActivity: "ontem", participants: 14, langs: [{ k: "PT", v: 46 }, { k: "EN", v: 34 }, { k: "RU", v: 20 }], parts: { speaking: 5, active: 7, idle: 2 }, status: "ended" as const },
+  { code: "delta-3019", name: "Pitch Investidores Série B", created: "20/05 · 09:30", lastActivity: "há 3 dias", participants: 5, langs: [{ k: "PT", v: 60 }, { k: "EN", v: 40 }], parts: { speaking: 2, active: 2, idle: 1 }, status: "ended" as const },
 ];
+
+const PART_META = {
+  speaking: { name: "Falando", hex: "#34d399" },
+  active: { name: "Ativos", hex: "#38bdf8" },
+  idle: { name: "Inativos", hex: "#64748b" },
+} as const;
 
 const features = [
   { Icon: Sparkles, label: "Resumo IA", to: "/summary", c: "text-primary" },
@@ -230,55 +236,93 @@ function Home() {
                     ))}
                   </div>
 
-                  {/* Language distribution */}
-                  <div className="mt-4 p-3 rounded-xl bg-white/[0.02] border border-border">
-                    <div className="flex items-center gap-1.5 mb-2.5">
-                      <span className="text-[9px] mono uppercase tracking-[0.2em] text-muted-foreground">Distribuição de idiomas</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      {/* Donut */}
-                      <div className="relative size-16 shrink-0">
-                        <svg className="size-16 -rotate-90" viewBox="0 0 44 44">
-                          <circle cx="22" cy="22" r="16" fill="none" stroke="hsl(var(--border))" strokeWidth="5" />
-                          {(() => {
-                            const C = 2 * Math.PI * 16;
-                            let acc = 0;
-                            return r.langs.map((l) => {
-                              const len = (C * l.v) / 100;
-                              const seg = (
-                                <circle
-                                  key={l.k}
-                                  cx="22" cy="22" r="16" fill="none"
-                                  stroke={LANG_META[l.k].hex}
-                                  strokeWidth="5"
-                                  strokeDasharray={`${len} ${C - len}`}
-                                  strokeDashoffset={-acc}
-                                />
-                              );
-                              acc += len;
-                              return seg;
-                            });
-                          })()}
-                        </svg>
-                        <div className="absolute inset-0 grid place-items-center">
-                          <div className="text-center leading-none">
-                            <div className="text-sm font-bold">{r.langs.length}</div>
-                            <div className="text-[7px] mono uppercase text-muted-foreground">idiomas</div>
+                  {/* Charts: idiomas + participantes */}
+                  <div className="mt-4 grid grid-cols-2 gap-2">
+                    {/* Idiomas */}
+                    <div className="p-3 rounded-xl bg-white/[0.02] border border-border">
+                      <div className="text-[9px] mono uppercase tracking-[0.18em] text-muted-foreground mb-2 truncate">Idiomas</div>
+                      <div className="flex items-center justify-center mb-2">
+                        <div className="relative size-14 shrink-0">
+                          <svg className="size-14 -rotate-90" viewBox="0 0 44 44">
+                            <circle cx="22" cy="22" r="16" fill="none" stroke="hsl(var(--border))" strokeWidth="5" />
+                            {(() => {
+                              const C = 2 * Math.PI * 16;
+                              let acc = 0;
+                              return r.langs.map((l) => {
+                                const len = (C * l.v) / 100;
+                                const seg = (
+                                  <circle key={l.k} cx="22" cy="22" r="16" fill="none"
+                                    stroke={LANG_META[l.k].hex} strokeWidth="5"
+                                    strokeDasharray={`${len} ${C - len}`} strokeDashoffset={-acc} />
+                                );
+                                acc += len;
+                                return seg;
+                              });
+                            })()}
+                          </svg>
+                          <div className="absolute inset-0 grid place-items-center">
+                            <div className="text-center leading-none">
+                              <div className="text-xs font-bold">{r.langs.length}</div>
+                              <div className="text-[7px] mono uppercase text-muted-foreground">idiom.</div>
+                            </div>
                           </div>
                         </div>
                       </div>
-                      {/* Legend */}
-                      <div className="flex-1 min-w-0 space-y-1">
+                      <div className="space-y-0.5">
                         {r.langs.map((l) => (
-                          <div key={l.k} className="flex items-center gap-2 text-[10px]">
+                          <div key={l.k} className="flex items-center gap-1.5 text-[9px]">
                             <span className="size-1.5 rounded-full shrink-0" style={{ background: LANG_META[l.k].hex }} />
-                            <span className="text-muted-foreground truncate flex-1">{LANG_META[l.k].name}</span>
+                            <span className="text-muted-foreground truncate flex-1">{l.k}</span>
                             <span className="mono font-bold text-foreground">{l.v}%</span>
                           </div>
                         ))}
                       </div>
                     </div>
+
+                    {/* Participantes */}
+                    <div className="p-3 rounded-xl bg-white/[0.02] border border-border">
+                      <div className="text-[9px] mono uppercase tracking-[0.18em] text-muted-foreground mb-2 truncate">Participantes</div>
+                      <div className="flex items-center justify-center mb-2">
+                        <div className="relative size-14 shrink-0">
+                          <svg className="size-14 -rotate-90" viewBox="0 0 44 44">
+                            <circle cx="22" cy="22" r="16" fill="none" stroke="hsl(var(--border))" strokeWidth="5" />
+                            {(() => {
+                              const C = 2 * Math.PI * 16;
+                              const total = r.parts.speaking + r.parts.active + r.parts.idle;
+                              let acc = 0;
+                              return (["speaking", "active", "idle"] as const).map((k) => {
+                                const v = r.parts[k];
+                                const len = total ? (C * v) / total : 0;
+                                const seg = (
+                                  <circle key={k} cx="22" cy="22" r="16" fill="none"
+                                    stroke={PART_META[k].hex} strokeWidth="5"
+                                    strokeDasharray={`${len} ${C - len}`} strokeDashoffset={-acc} />
+                                );
+                                acc += len;
+                                return seg;
+                              });
+                            })()}
+                          </svg>
+                          <div className="absolute inset-0 grid place-items-center">
+                            <div className="text-center leading-none">
+                              <div className="text-xs font-bold">{r.participants}</div>
+                              <div className="text-[7px] mono uppercase text-muted-foreground">pess.</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="space-y-0.5">
+                        {(["speaking", "active", "idle"] as const).map((k) => (
+                          <div key={k} className="flex items-center gap-1.5 text-[9px]">
+                            <span className="size-1.5 rounded-full shrink-0" style={{ background: PART_META[k].hex }} />
+                            <span className="text-muted-foreground truncate flex-1">{PART_META[k].name}</span>
+                            <span className="mono font-bold text-foreground">{r.parts[k]}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
+
 
                   <div className="mt-4 flex gap-2">
                     <Link
